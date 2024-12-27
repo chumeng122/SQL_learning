@@ -1,2 +1,5 @@
 hello.
 try to push on github
+
+$ git push origin main
+
