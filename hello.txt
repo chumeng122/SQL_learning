@@ -1,7 +1,0 @@
-hello.
-try to push on github
-
-$ git push origin main
-
-git change name / email
-

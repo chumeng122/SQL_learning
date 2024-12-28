@@ -1,0 +1,198 @@
+# Table
+rational database: 組合information into 表格
+data type INTEGER TEXT DATE REAL
+
+CREATE TABLE table_name (
+   column_1 data_type, 
+   column_2 data_type, 
+   column_3 data_type
+);
+
+parameter:column_1 data_type,column_2 data_type, column_3 data_type 
+
+CREATE TABLE celebs (
+   id INTEGER, 
+   name TEXT, 
+   age INTEGER
+);
+
+INSERT INTO celebs (id, name, age) 
+VALUES (1, 'Justin Bieber', 29);
+
+SELECT name FROM celebs;
+
+ALTER TABLE: Add column
+ALTER TABLE celebs ADD COLUMN twitter_handle TEXT;
+
+UPDATE: edit element
+UPDATE celebs SET twitter_handle = '@taylorswift13' WHERE id = 4; 
+
+DELETE
+DELETE FROM celebs 
+WHERE twitter_handle IS NULL;
+把 twitter_handle 為空的地方刪除
+
+Constraints (宣告 table的時候給予限制)
+PRIMARY KEY	row 值種類唯一: 嘗試插入相同值會報錯 (一個 table 只有一個)
+UNIQUE		row 值種類唯一: 嘗試插入相同值會報錯 (一個 table 可以有好多個)
+NOT NULL 	這個行被紮入的時候需要有值
+DEFAULT 	預設值
+
+CREATE TABLE celebs (
+   id INTEGER PRIMARY KEY, 
+   name TEXT UNIQUE,
+   date_of_birth TEXT NOT NULL,
+   date_of_death TEXT DEFAULT 'Not Applicable'
+);
+
+# Query
+SELECT * FROM movies;
+SELECT name AS 'Titles' FROM movies; rename a column or table using an alias (別名)
+SELECT DISTINCT tools FROM inventory; 
+(1,2,3,3 - >1,2,3)
+
+SELECT *
+FROM movies
+WHERE imdb_rating > 8;
+-- get the information we want -> where
+
+SELECT * 
+FROM movies
+WHERE name LIKE 'Se_en'; : Seven, Se7en
+-- compare similar value
+
+SELECT * 
+FROM movies
+WHERE name LIKE 'A%';
+
+_: one char
+%: A% begin A% %a
+
+IS NULL
+
+SELECT *
+FROM movies
+WHERE year BETWEEN 1990 AND 1999; from 1990 ~1999
+BETWEEN 'A' AND 'J'; A 到J以前
+
+Order By: sort the result
+
+SELECT *
+FROM movies
+WHERE imdb_rating > 8
+ORDER BY year DESC; //ASC
+
+Limit // show a few example
+
+Case
+SELECT name,
+ CASE
+  WHEN imdb_rating > 8 THEN 'Fantastic'
+  WHEN imdb_rating > 6 THEN 'Poorly Received'
+  ELSE 'Avoid at All Costs'
+ END AS 'Review' (新開的標題名)
+FROM movies;
+
+// if else logic
+
+# Aggregate function
+SELECT COUNT(*) FROM table_name; 數個數
+// SUM(), MAX(), MIN(), SELECT AVG(), ROUND(, 0)
+
+SELECT year, AVG(imdb_rating)
+FROM movies
+GROUP BY year
+ORDER BY year;
+--以年分群計算
+
+SELECT ROUND(imdb_rating),
+   COUNT(name)
+FROM movies
+GROUP BY 1
+ORDER BY 1;
+
+ROUND(imdb_rating):1, COUNT(name):2
+-- 1: first column
+
+SELECT year,
+   genre,
+   COUNT(name)
+FROM movies
+GROUP BY 1, 2
+HAVING COUNT(name) > 10;
+HAVING: filter which groups to exclude
+COUNT(*): 分組中行數
+COUNT(name): 列非null行數
+
+# Mulitiple tables
+背景：若將所有屬性都放在同一個表裡，訊息會重複，儲存效率低=> 分表
+
+combine table
+SELECT *
+FROM orders
+JOIN customers
+  ON orders.customer_id = customers.customer_id;
+
+將 orders 裡 customer_id 和 customers 裡 customer_id 相同的部分接在一起
+(JOIN 默認 inner join)
+--ON 根據哪個index合併
+--WHERE 篩選條件
+
+A合併B
+JOIN (inner join): 保留共同有的
+LEFT JOIN (left join): A - 共同有的
+
+SELECT * 
+FROM newspaper
+LEFT JOIN online
+ON newspaper.id == online.id
+WHERE online.id IS NULL;
+-- 找出有newspaper但沒online的
+
+primary key: unique in each row of the table
+foreign key: 當primary key 出現在不同的table上
+
+SELECT shirts.shirt_color,
+   pants.pants_color
+FROM shirts
+CROSS JOIN pants;
+A cross join B -- A B搭配
+
+SELECT *
+FROM table1
+UNION
+SELECT *
+FROM table2;
+--有相同column 上下合併
+
+WITH customer_subscriptions AS (
+  SELECT customer_id, COUNT(*) AS subscription_count
+  FROM orders
+  GROUP BY customer_id
+)
+用WITH定義中間結果為 customer_subscriptions
+下次可使用customer_subscriptions
+**句尾不要有逗號
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
